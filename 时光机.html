@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>时光机</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', Roboto, system-ui, sans-serif;
+            background: #f5f1fe;
+            padding: 16px 12px 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+        }
+        .app {
+            max-width: 700px;
+            width: 100%;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 28px;
+            padding: 22px 20px 26px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(80, 60, 140, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #3d3357;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+            letter-spacing: 0.3px;
+        }
+        .card-title .badge {
+            font-size: 12px;
+            background: #6C63FF;
+            color: #fff;
+            padding: 2px 14px;
+            border-radius: 30px;
+            margin-left: auto;
+            font-weight: 500;
+        }
+        .header {
+            text-align: center;
+            padding: 24px 16px 18px;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 32px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #5B4FBF, #8B6FD8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .header p {
+            color: #7a6f9a;
+            font-size: 14px;
+            margin-top: 4px;
+        }
+        .header .date {
+            font-size: 13px;
+            color: #9a8db5;
+            margin-top: 8px;
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.4);
+            padding: 4px 18px;
+            border-radius: 30px;
+        }
+        .birth-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 16px;
+            margin-bottom: 16px;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 12px 16px;
+            border-radius: 18px;
+        }
+        .birth-row label {
+            font-weight: 500;
+            color: #4d3f6b;
+            font-size: 15px;
+        }
+        .birth-row input[type="date"] {
+            flex: 1;
+            border: none;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 14px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-family: inherit;
+            color: #2d2440;
+            border: 1px solid rgba(108, 99, 255, 0.15);
+            outline: none;
+            min-width: 150px;
+        }
+        .birth-row input[type="date"]:focus {
+            border-color: #6C63FF;
+            background: #fff;
+        }
+        .age-display {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: center;
+            gap: 10px 28px;
+            padding: 10px 0 12px;
+            border-bottom: 2px dashed rgba(108, 99, 255, 0.10);
+            margin-bottom: 16px;
+        }
+        .age-number {
+            font-size: 40px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #5B4FBF, #8B6FD8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+        .age-number small {
+            font-size: 20px;
+            font-weight: 500;
+            -webkit-text-fill-color: #7a6f9a;
+            margin-left: 4px;
+        }
+        .age-detail {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #4d3f6b;
+        }
+        .age-detail strong {
+            font-size: 20px;
+            color: #3d3357;
+        }
+        .days-lived {
+            text-align: center;
+            font-size: 14px;
+            color: #7a6f9a;
+            margin-bottom: 12px;
+        }
+        .days-lived strong {
+            font-size: 22px;
+            color: #5B4FBF;
+        }
+        .target-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 10px 16px;
+            background: rgba(108, 99, 255, 0.04);
+            padding: 12px 16px;
+            border-radius: 18px;
+            margin-bottom: 14px;
+        }
+        .target-row label {
+            font-weight: 500;
+            color: #4d3f6b;
+            font-size: 15px;
+        }
+        .target-row input[type="number"] {
+            width: 80px;
+            border: none;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 8px 10px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            text-align: center;
+            font-family: inherit;
+            border: 1px solid rgba(108, 99, 255, 0.15);
+            outline: none;
+        }
+        .target-row input[type="number"]:focus {
+            border-color: #6C63FF;
+            background: #fff;
+        }
+        .target-row .quick {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+            flex-wrap: wrap;
+        }
+        .target-row .quick button {
+            background: rgba(108, 99, 255, 0.08);
+            border: none;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #5B4FBF;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .target-row .quick button:active {
+            transform: scale(0.95);
+        }
+        .countdown-box {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 8px 24px;
+            padding: 10px 0;
+        }
+        .countdown-number {
+            font-size: 36px;
+            font-weight: 800;
+            color: #5B4FBF;
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+        }
+        .countdown-number .unit {
+            font-size: 16px;
+            font-weight: 500;
+            color: #9a8db5;
+        }
+        .countdown-status {
+            font-size: 15px;
+            font-weight: 600;
+            padding: 4px 18px;
+            border-radius: 30px;
+            background: rgba(108, 99, 255, 0.10);
+            color: #5B4FBF;
+        }
+        .countdown-status.exceed {
+            background: rgba(255, 107, 107, 0.12);
+            color: #e05050;
+        }
+        .progress-wrap {
+            margin-top: 14px;
+        }
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: rgba(108, 99, 255, 0.12);
+            border-radius: 30px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #6C63FF, #b58cdb);
+            transition: width 0.6s ease;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #9a8db5;
+            margin-top: 4px;
+        }
+        .video-upload-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .video-upload-row label {
+            background: #6C63FF;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: 0.25s;
+            box-shadow: 0 4px 14px rgba(108, 99, 255, 0.25);
+            border: none;
+        }
+        .video-upload-row label:active {
+            transform: scale(0.96);
+        }
+        .video-upload-row input[type="file"] {
+            display: none;
+        }
+        .video-wrapper {
+            border-radius: 18px;
+            overflow: hidden;
+            background: #000;
+            position: relative;
+            aspect-ratio: 16 / 9;
+            background-color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+        }
+        .video-wrapper video {
+            width: 100%;
+            height: 100%;
+            display: block;
+            object-fit: contain;
+            background: #000;
+        }
+        .video-wrapper .placeholder {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 16px;
+            text-align: center;
+            padding: 20px;
+        }
+        .video-wrapper .placeholder span {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .video-list {
+            list-style: none;
+            padding: 0;
+            max-height: 220px;
+            overflow-y: auto;
+            border-top: 1px solid rgba(108, 99, 255, 0.08);
+            margin-top: 8px;
+            padding-top: 8px;
+        }
+        .video-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 14px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .video-list li:active {
+            background: rgba(108, 99, 255, 0.10);
+        }
+        .video-list li .vname {
+            flex: 1;
+            font-size: 14px;
+            color: #2d2440;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .video-list li .vtime {
+            font-size: 11px;
+            color: #b5a9cc;
+            flex-shrink: 0;
+        }
+        .video-list li .vrename {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #9a8db5;
+            padding: 0 4px;
+            line-height: 1;
+            transition: 0.2s;
+        }
+        .video-list li .vrename:active {
+            color: #6C63FF;
+            transform: scale(1.1);
+        }
+        .video-list li .vdel {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #b5a9cc;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .video-list li .vdel:active {
+            color: #e05050;
+        }
+        .video-list li .vdownload {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: #6C63FF;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .video-list .empty-video {
+            text-align: center;
+            padding: 20px;
+            color: #b5a9cc;
+            font-size: 14px;
+        }
+        .goal-input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .goal-input-row input[type="text"] {
+            flex: 1;
+            border: none;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 10px 18px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-family: inherit;
+            border: 1px solid rgba(108, 99, 255, 0.10);
+            outline: none;
+            min-width: 140px;
+        }
+        .goal-input-row input[type="text"]:focus {
+            border-color: #6C63FF;
+            background: #fff;
+        }
+        .btn {
+            border: none;
+            padding: 10px 24px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.2s;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #6C63FF, #8B6FD8);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(108, 99, 255, 0.2);
+        }
+        .btn-primary:active {
+            transform: scale(0.96);
+        }
+        .btn-danger {
+            background: rgba(255, 107, 107, 0.10);
+            color: #e05050;
+            border: 1px solid rgba(255, 107, 107, 0.15);
+            padding: 6px 18px;
+            font-size: 13px;
+        }
+        .btn-danger:active {
+            background: rgba(255, 107, 107, 0.20);
+        }
+        .goals-list {
+            list-style: none;
+            padding: 0;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .goals-list li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            margin-bottom: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            animation: fadeUp 0.3s ease;
+        }
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .goal-check {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid #c5b9db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            cursor: pointer;
+            font-size: 14px;
+            color: transparent;
+            transition: 0.2s;
+            background: rgba(255, 255, 255, 0.2);
+        }
+        .goal-check.done {
+            background: #6C63FF;
+            border-color: #6C63FF;
+            color: #fff;
+        }
+        .goal-text {
+            flex: 1;
+            font-size: 15px;
+            color: #2d2440;
+            word-break: break-word;
+        }
+        .goal-text.done {
+            text-decoration: line-through;
+            color: #b5a9cc;
+        }
+        .goal-meta {
+            font-size: 11px;
+            color: #b5a9cc;
+            flex-shrink: 0;
+        }
+        .goal-del {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #b5a9cc;
+            cursor: pointer;
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .goal-del:active {
+            color: #e05050;
+        }
+        .goals-stats {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 2px dashed rgba(108, 99, 255, 0.08);
+            font-size: 13px;
+            color: #7a6f9a;
+        }
+        .goals-stats .num {
+            font-weight: 700;
+            color: #5B4FBF;
+        }
+        .goals-stats .num.done {
+            color: #27ae60;
+        }
+        .empty-goal {
+            text-align: center;
+            padding: 28px 10px;
+            color: #b5a9cc;
+            font-size: 15px;
+        }
+        .empty-goal span {
+            font-size: 36px;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .toolbar .btn {
+            font-size: 13px;
+            padding: 6px 18px;
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            color: #b5a9cc;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                padding: 18px 14px 20px;
+            }
+            .age-number {
+                font-size: 32px;
+            }
+            .countdown-number {
+                font-size: 28px;
+            }
+            .target-row .quick {
+                margin-left: 0;
+                width: 100%;
+                justify-content: center;
+            }
+            .video-upload-row label {
+                width: 100%;
+                justify-content: center;
+            }
+            .goal-input-row {
+                flex-direction: column;
+            }
+            .goal-input-row input[type="text"] {
+                width: 100%;
+            }
+            .goals-stats {
+                flex-direction: column;
+                gap: 4px;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app">
+        <!-- 头部 -->
+        <header class="header">
+            <h1>⏳ 时光机器</h1>
+            <p>珍惜每一天 · 活出精彩</p>
+            <div class="date" id="currentDate"></div>
+            <div style="font-size:12px; color:#9a8db5; margin-top:6px;">📁 数据自动保存在浏览器中</div>
+        </header>
+
+        <!-- 年龄卡片 -->
+        <section class="card">
+            <div class="card-title">
+                <span>📅 年龄提醒</span>
+                <span class="badge">实时</span>
+            </div>
+            <div class="birth-row">
+                <label for="birthInput">🎂 出生日期</label>
+                <input type="date" id="birthInput" />
+            </div>
+            <div class="age-display">
+                <div class="age-number">
+                    <span id="ageYears">--</span><small>岁</small>
+                </div>
+                <div class="age-detail">
+                    <span><strong id="ageMonths">--</strong> 个月</span>
+                    <span><strong id="ageDays">--</strong> 天</span>
+                </div>
+            </div>
+            <div class="days-lived">
+                已度过 <strong id="totalDays">--</strong> 天
+            </div>
+            <div class="target-row">
+                <label for="targetAge">🎯 人生新阶段</label>
+                <input type="number" id="targetAge" value="100" min="1" max="200" />
+                <span style="color:#7a6f9a;font-size:14px;">岁</span>
+                <div class="quick">
+                    <button data-age="80">80</button>
+                    <button data-age="90">90</button>
+                    <button data-age="100">100</button>
+                    <button data-age="120">120</button>
+                </div>
+            </div>
+            <div class="countdown-box">
+                <div class="countdown-number">
+                    <span id="countdownDays">--</span><span class="unit">天</span>
+                </div>
+                <div>
+                    <div style="font-size:14px;color:#7a6f9a;" id="countdownLabel">距离目标年龄</div>
+                    <div class="countdown-status" id="countdownStatus">计算中…</div>
+                </div>
+            </div>
+            <div class="progress-wrap">
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill" style="width:0%;"></div>
+                </div>
+                <div class="progress-label">
+                    <span>0 岁</span>
+                    <span id="progressPercent">0%</span>
+                    <span id="progressTarget">100 岁</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 视频卡片 -->
+        <section class="card">
+            <div class="card-title">
+                <span>🎬 每日一看</span>
+                <span class="badge" id="videoCountBadge">0 个</span>
+            </div>
+            <div class="video-area">
+                <div class="video-upload-row">
+                    <label for="videoInput">📁 选择视频（可多选）</label>
+                    <input type="file" id="videoInput" accept="video/*" multiple />
+                    <span style="font-size:13px;color:#9a8db5;">支持 MP4 / MOV 等</span>
+                </div>
+                <div class="video-wrapper">
+                    <video id="videoPlayer" controls preload="metadata" playsinline></video>
+                    <div class="placeholder" id="videoPlaceholder">
+                        <span>▶️</span>
+                        点击上方选择视频<br />或在列表中选择播放
+                    </div>
+                </div>
+                <ul class="video-list" id="videoList"></ul>
+            </div>
+        </section>
+
+        <!-- 人生目标卡片 -->
+        <section class="card">
+            <div class="card-title">
+                <span>✨ 人生目标</span>
+                <span class="badge" id="goalBadge">0 项</span>
+            </div>
+            <div class="goal-input-row">
+                <input type="text" id="goalInput" placeholder="写下你的目标…" maxlength="120" />
+                <button class="btn btn-primary" id="addGoalBtn">添加</button>
+            </div>
+            <ul class="goals-list" id="goalsList"></ul>
+            <div class="goals-stats">
+                <span>📋 总计：<span class="num" id="totalGoals">0</span> 项</span>
+                <span>✅ 已完成：<span class="num done" id="doneGoals">0</span> 项</span>
+                <span>⏳ 进行中：<span class="num" id="pendingGoals">0</span> 项</span>
+                <button class="btn btn-danger" id="clearDoneBtn">清除已完成</button>
+            </div>
+        </section>
+
+        <!-- 底部工具栏 -->
+        <div class="toolbar">
+            <button class="btn btn-primary" id="exportDataBtn">💾 备份数据</button>
+            <button class="btn btn-primary" id="importDataBtn" style="background:#8B6FD8;">📂 恢复数据</button>
+            <input type="file" id="importFileInput" accept=".json" style="display:none;" />
+            <button class="btn btn-danger" id="resetDefaultGoalsBtn">↩️ 恢复示例</button>
+        </div>
+        <div class="footer-note">💡 数据存储在浏览器 IndexedDB 中，建议不定期导出备份</div>
+    </div>
+
+    <script>
+        // ============================================================
+        //  数据库操作 (IndexedDB)
+        // ============================================================
+        const DB_NAME = 'LifeTimerDataDB';
+        const CORE_STORE = 'core';
+        const VIDEO_STORE = 'videos';
+        let db = null;
+
+        function openDB() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, 2);
+                request.onupgradeneeded = (e) => {
+                    const db = e.target.result;
+                    if (!db.objectStoreNames.contains(CORE_STORE)) {
+                        db.createObjectStore(CORE_STORE, { keyPath: 'id' });
+                    }
+                    if (!db.objectStoreNames.contains(VIDEO_STORE)) {
+                        db.createObjectStore(VIDEO_STORE, { keyPath: 'id', autoIncrement: true });
+                    }
+                };
+                request.onsuccess = (e) => {
+                    db = e.target.result;
+                    resolve(db);
+                };
+                request.onerror = (e) => reject(e.target.error);
+            });
+        }
+
+        // ----- 核心数据 (年龄+目标) -----
+        function saveCoreData(key, value) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(CORE_STORE, 'readwrite');
+                const store = tx.objectStore(CORE_STORE);
+                const request = store.put({ id: key, value: value });
+                request.onsuccess = () => resolve();
+                request.onerror = (err) => reject(err);
+            });
+        }
+
+        function getCoreData(key) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(CORE_STORE, 'readonly');
+                const store = tx.objectStore(CORE_STORE);
+                const request = store.get(key);
+                request.onsuccess = () => resolve(request.result ? request.result.value : null);
+                request.onerror = (err) => reject(err);
+            });
+        }
+
+        // ----- 视频操作 -----
+        function saveVideo(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const data = e.target.result;
+                    const entry = {
+                        name: file.name,
+                        type: file.type,
+                        size: file.size,
+                        data: data,
+                        uploadedAt: new Date().toISOString()
+                    };
+                    const tx = db.transaction(VIDEO_STORE, 'readwrite');
+                    const store = tx.objectStore(VIDEO_STORE);
+                    const request = store.add(entry);
+                    request.onsuccess = () => resolve(request.result);
+                    request.onerror = (err) => reject(err);
+                };
+                reader.onerror = (err) => reject(err);
+                reader.readAsArrayBuffer(file);
+            });
+        }
+
+        function getAllVideos() {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(VIDEO_STORE, 'readonly');
+                const store = tx.objectStore(VIDEO_STORE);
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = (err) => reject(err);
+            });
+        }
+
+        function deleteVideo(id) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(VIDEO_STORE, 'readwrite');
+                const store = tx.objectStore(VIDEO_STORE);
+                const request = store.delete(id);
+                request.onsuccess = () => resolve();
+                request.onerror = (err) => reject(err);
+            });
+        }
+
+        function updateVideoName(id, newName) {
+            return new Promise((resolve, reject) => {
+                const tx = db.transaction(VIDEO_STORE, 'readwrite');
+                const store = tx.objectStore(VIDEO_STORE);
+                const getRequest = store.get(id);
+                getRequest.onsuccess = () => {
+                    const record = getRequest.result;
+                    if (!record) { reject(new Error('不存在')); return; }
+                    record.name = newName;
+                    const putRequest = store.put(record);
+                    putRequest.onsuccess = () => resolve();
+                    putRequest.onerror = (err) => reject(err);
+                };
+                getRequest.onerror = (err) => reject(err);
+            });
+        }
+
+        // ============================================================
+        //  应用状态
+        // ============================================================
+        let state = {
+            birthDate: null,
+            targetAge: 100,
+            goals: [],
+        };
+
+        // 工具函数
+        function formatDateInput(date) {
+            const y = date.getFullYear();
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            return `${y}-${m}-${d}`;
+        }
+
+        function parseDate(str) {
+            if (!str) return null;
+            const parts = str.split('-').map(Number);
+            if (parts.length !== 3) return null;
+            return new Date(parts[0], parts[1] - 1, parts[2]);
+        }
+
+        function calcAge(birth) {
+            if (!birth || isNaN(birth.getTime())) return null;
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const b = new Date(birth);
+            b.setHours(0, 0, 0, 0);
+            let years = today.getFullYear() - b.getFullYear();
+            let months = today.getMonth() - b.getMonth();
+            let days = today.getDate() - b.getDate();
+            if (days < 0) { months--;
+                const prev = new Date(today.getFullYear(), today.getMonth(), 0);
+                days += prev.getDate(); }
+            if (months < 0) { years--;
+                months += 12; }
+            const totalDays = Math.floor((today - b) / (86400000));
+            return { years, months, days, totalDays };
+        }
+
+        function calcCountdown(birth, target) {
+            if (!birth || isNaN(birth.getTime()) || !target || target <= 0) return null;
+            const b = new Date(birth);
+            b.setHours(0, 0, 0, 0);
+            const targetDate = new Date(b.getFullYear() + target, b.getMonth(), b.getDate());
+            targetDate.setHours(0, 0, 0, 0);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return Math.floor((targetDate - today) / 86400000);
+        }
+
+        // ---------- 加载核心数据 ----------
+        async function loadStateFromDB() {
+            try {
+                const birthStr = await getCoreData('birthDate');
+                if (birthStr) {
+                    const d = parseDate(birthStr);
+                    if (d && !isNaN(d.getTime())) state.birthDate = d;
+                }
+                const target = await getCoreData('targetAge');
+                if (target) state.targetAge = parseInt(target, 10) || 100;
+                const goals = await getCoreData('goals');
+                if (goals && Array.isArray(goals)) state.goals = goals;
+                else state.goals = [];
+            } catch (e) {
+                console.warn('加载 IndexedDB 失败，尝试从 localStorage 恢复');
+                const b = localStorage.getItem('life_timer_birth');
+                if (b) { const d = parseDate(b); if (d && !isNaN(d.getTime())) state.birthDate = d; }
+                const t = parseInt(localStorage.getItem('life_timer_target'), 10);
+                if (t > 0) state.targetAge = t;
+                const g = localStorage.getItem('life_timer_goals');
+                if (g) { try { const parsed = JSON.parse(g); if (Array.isArray(parsed)) state.goals = parsed; } catch (_) {} }
+                await saveAllCoreData();
+            }
+        }
+
+        // ---------- 保存所有核心数据 ----------
+        async function saveAllCoreData() {
+            try {
+                await saveCoreData('birthDate', state.birthDate ? formatDateInput(state.birthDate) : null);
+                await saveCoreData('targetAge', String(state.targetAge));
+                await saveCoreData('goals', state.goals);
+                // 同步到 localStorage 备用
+                if (state.birthDate) localStorage.setItem('life_timer_birth', formatDateInput(state.birthDate));
+                else localStorage.removeItem('life_timer_birth');
+                localStorage.setItem('life_timer_target', String(state.targetAge));
+                localStorage.setItem('life_timer_goals', JSON.stringify(state.goals));
+            } catch (e) {
+                console.error('保存数据失败', e);
+            }
+        }
+
+        // ============================================================
+        //  渲染函数
+        // ============================================================
+        function renderDate() {
+            const now = new Date();
+            document.getElementById('currentDate').textContent = '📆 ' + now.toLocaleDateString('zh-CN', { weekday: 'short',
+                year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function renderAge() {
+            const birth = state.birthDate;
+            const target = state.targetAge;
+            const ageYears = document.getElementById('ageYears');
+            const ageMonths = document.getElementById('ageMonths');
+            const ageDays = document.getElementById('ageDays');
+            const totalDays = document.getElementById('totalDays');
+            const cdDays = document.getElementById('countdownDays');
+            const cdLabel = document.getElementById('countdownLabel');
+            const cdStatus = document.getElementById('countdownStatus');
+            const fill = document.getElementById('progressFill');
+            const percent = document.getElementById('progressPercent');
+            const targetLabel = document.getElementById('progressTarget');
+            targetLabel.textContent = `${target} 岁`;
+            if (!birth || isNaN(birth.getTime())) {
+                ageYears.textContent = '--';
+                ageMonths.textContent = '--';
+                ageDays.textContent = '--';
+                totalDays.textContent = '--';
+                cdDays.textContent = '--';
+                cdLabel.textContent = '请设置出生日期';
+                cdStatus.textContent = '⏳ 等待';
+                cdStatus.className = 'countdown-status';
+                fill.style.width = '0%';
+                percent.textContent = '0%';
+                return;
+            }
+            const age = calcAge(birth);
+            if (!age) return;
+            ageYears.textContent = age.years;
+            ageMonths.textContent = age.months;
+            ageDays.textContent = age.days;
+            totalDays.textContent = age.totalDays.toLocaleString();
+            const diff = calcCountdown(birth, target);
+            if (diff === null) {
+                cdDays.textContent = '--';
+                cdLabel.textContent = '目标年龄无效';
+                cdStatus.textContent = '⚠️';
+                cdStatus.className = 'countdown-status';
+                return;
+            }
+            if (diff >= 0) {
+                cdDays.textContent = diff.toLocaleString();
+                cdLabel.textContent = `距离 ${target} 岁还有`;
+                cdStatus.textContent = '⏳ 继续前行';
+                cdStatus.className = 'countdown-status';
+            } else {
+                cdDays.textContent = Math.abs(diff).toLocaleString();
+                cdLabel.textContent = `已超过 ${target} 岁`;
+                cdStatus.textContent = '🌟 超越目标！';
+                cdStatus.className = 'countdown-status exceed';
+            }
+            let pct = target > 0 ? Math.min(100, (age.years / target) * 100) : 0;
+            if (age.years >= target) pct = 100;
+            fill.style.width = `${pct}%`;
+            percent.textContent = `${Math.round(pct)}%`;
+        }
+
+        function renderGoals() {
+            const list = document.getElementById('goalsList');
+            const totalEl = document.getElementById('totalGoals');
+            const doneEl = document.getElementById('doneGoals');
+            const pendingEl = document.getElementById('pendingGoals');
+            const badge = document.getElementById('goalBadge');
+            const clearBtn = document.getElementById('clearDoneBtn');
+            const goals = state.goals;
+            const total = goals.length;
+            const done = goals.filter(g => g.completed).length;
+            const pending = total - done;
+            totalEl.textContent = total;
+            doneEl.textContent = done;
+            pendingEl.textContent = pending;
+            badge.textContent = `${total} 项`;
+            if (total === 0) {
+                list.innerHTML = `<li class="empty-goal"><span>🌱</span>还没有目标，添加一个吧！</li>`;
+                clearBtn.style.display = 'none';
+                return;
+            }
+            clearBtn.style.display = done > 0 ? 'inline-block' : 'none';
+            const sorted = [...goals].sort((a, b) => (a.completed === b.completed ? b.id - a.id : a.completed ? 1 : -1));
+            let html = '';
+            for (const g of sorted) {
+                const checked = g.completed ? 'done' : '';
+                const textClass = g.completed ? 'done' : '';
+                const dateStr = g.createdAt ? new Date(g.createdAt).toLocaleDateString('zh-CN') : '';
+                html += `
+                    <li data-id="${g.id}">
+                        <span class="goal-check ${checked}" data-action="toggle" data-id="${g.id}">${g.completed ? '✓' : ''}</span>
+                        <span class="goal-text ${textClass}">${escapeHtml(g.text)}</span>
+                        <span class="goal-meta">${dateStr}</span>
+                        <button class="goal-del" data-action="delete" data-id="${g.id}">✕</button>
+                    </li>
+                `;
+            }
+            list.innerHTML = html;
+        }
+
+        function escapeHtml(str) {
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+
+        function syncInputs() {
+            const birthInput = document.getElementById('birthInput');
+            if (state.birthDate) birthInput.value = formatDateInput(state.birthDate);
+            else birthInput.value = '';
+            document.getElementById('targetAge').value = state.targetAge;
+        }
+
+        function renderAll() {
+            renderDate();
+            renderAge();
+            renderGoals();
+            syncInputs();
+            renderVideoList();
+        }
+
+        // ============================================================
+        //  视频管理
+        // ============================================================
+        const videoInput = document.getElementById('videoInput');
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoPlaceholder = document.getElementById('videoPlaceholder');
+        const videoListEl = document.getElementById('videoList');
+        const videoCountBadge = document.getElementById('videoCountBadge');
+        let currentVideoId = null;
+
+        async function renderVideoList() {
+            if (!db) { await openDB(); }
+            const videos = await getAllVideos();
+            videoCountBadge.textContent = `${videos.length} 个`;
+            if (videos.length === 0) {
+                videoListEl.innerHTML = `<li class="empty-video">📭 还没有视频，点击上方按钮上传</li>`;
+                videoPlayer.style.display = 'none';
+                videoPlaceholder.style.display = 'flex';
+                return;
+            }
+            let html = '';
+            for (const v of videos) {
+                const dateStr = new Date(v.uploadedAt).toLocaleString('zh-CN');
+                const isActive = (currentVideoId === v.id) ? 'active' : '';
+                html += `
+                    <li data-id="${v.id}" class="${isActive}" style="${isActive ? 'background:rgba(108,99,255,0.12);border-color:#6C63FF;' : ''}">
+                        <span class="vname">🎞️ ${escapeHtml(v.name)}</span>
+                        <span class="vtime">${dateStr}</span>
+                        <button class="vrename" data-action="rename-video" data-id="${v.id}">✏️</button>
+                        <button class="vdownload" data-action="download-video" data-id="${v.id}">⬇️</button>
+                        <button class="vdel" data-action="delete-video" data-id="${v.id}">✕</button>
+                    </li>
+                `;
+            }
+            videoListEl.innerHTML = html;
+            if (!currentVideoId && videos.length > 0) {
+                playVideoById(videos[0].id);
+            } else if (currentVideoId) {
+                const exists = videos.some(v => v.id === currentVideoId);
+                if (!exists) {
+                    if (videos.length > 0) { playVideoById(videos[0].id); } else {
+                        videoPlayer.style.display = 'none';
+                        videoPlaceholder.style.display = 'flex';
+                        currentVideoId = null;
+                    }
+                }
+            }
+        }
+
+        async function playVideoById(id) {
+            if (!db) await openDB();
+            const videos = await getAllVideos();
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+            currentVideoId = id;
+            const blob = new Blob([video.data], { type: video.type || 'video/mp4' });
+            const url = URL.createObjectURL(blob);
+            videoPlayer.src = url;
+            videoPlayer.load();
+            videoPlayer.style.display = 'block';
+            videoPlaceholder.style.display = 'none';
+            renderVideoList();
+        }
+
+        async function deleteVideoById(id) {
+            if (!db) await openDB();
+            if (!confirm('确定要删除这个视频吗？')) return;
+            await deleteVideo(id);
+            if (currentVideoId === id) {
+                currentVideoId = null;
+                videoPlayer.pause();
+                videoPlayer.src = '';
+                videoPlayer.style.display = 'none';
+                videoPlaceholder.style.display = 'flex';
+            }
+            renderVideoList();
+        }
+
+        async function renameVideoById(id) {
+            if (!db) await openDB();
+            const videos = await getAllVideos();
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+            const newName = prompt('请输入新的视频名称：', video.name);
+            if (newName === null || newName.trim() === '') return;
+            try {
+                await updateVideoName(id, newName.trim());
+                renderVideoList();
+            } catch (err) {
+                alert('重命名失败，请重试');
+                console.error(err);
+            }
+        }
+
+        async function downloadVideoById(id) {
+            if (!db) await openDB();
+            const videos = await getAllVideos();
+            const video = videos.find(v => v.id === id);
+            if (!video) return;
+            const blob = new Blob([video.data], { type: video.type || 'video/mp4' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = video.name || 'video.mp4';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // ---------- 视频事件 ----------
+        videoInput.addEventListener('change', async function(e) {
+            const files = this.files;
+            if (!files || files.length === 0) return;
+            if (!db) await openDB();
+            let added = 0;
+            for (const file of files) {
+                try { await saveVideo(file);
+                    added++; } catch (err) { console.error(err); }
+            }
+            if (added > 0) {
+                renderVideoList();
+                const videos = await getAllVideos();
+                if (videos.length > 0) playVideoById(videos[videos.length - 1].id);
+            }
+            this.value = '';
+        });
+
+        videoListEl.addEventListener('click', async function(e) {
+            const target = e.target.closest('[data-action]') || e.target.closest('li');
+            if (!target) return;
+            const action = target.dataset.action;
+            const id = parseInt(target.dataset.id, 10);
+            if (action === 'delete-video') {
+                await deleteVideoById(id);
+                return;
+            }
+            if (action === 'rename-video') {
+                await renameVideoById(id);
+                return;
+            }
+            if (action === 'download-video') {
+                await downloadVideoById(id);
+                return;
+            }
+            const li = target.closest('li');
+            if (li && li.dataset.id) {
+                const id = parseInt(li.dataset.id, 10);
+                await playVideoById(id);
+            }
+        });
+
+        // ============================================================
+        //  核心数据修改事件
+        // ============================================================
+        document.getElementById('birthInput').addEventListener('change', async function() {
+            const val = this.value;
+            if (val) { const d = parseDate(val); if (d && !isNaN(d.getTime())) { state.birthDate = d; } else { state
+                        .birthDate = null; } } else { state.birthDate = null; }
+            await saveAllCoreData();
+            renderAge();
+        });
+
+        document.getElementById('targetAge').addEventListener('change', async function() {
+            let v = parseInt(this.value, 10);
+            if (isNaN(v) || v < 1) v = 1;
+            if (v > 200) v = 200;
+            this.value = v;
+            state.targetAge = v;
+            await saveAllCoreData();
+            renderAge();
+        });
+
+        document.querySelectorAll('.quick button').forEach(btn => {
+            btn.addEventListener('click', async function() {
+                const age = parseInt(this.dataset.age, 10);
+                if (age > 0) {
+                    document.getElementById('targetAge').value = age;
+                    state.targetAge = age;
+                    await saveAllCoreData();
+                    renderAge();
+                }
+            });
+        });
+
+        // 目标添加
+        document.getElementById('addGoalBtn').addEventListener('click', addGoal);
+        document.getElementById('goalInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') addGoal();
+        });
+
+        async function addGoal() {
+            const input = document.getElementById('goalInput');
+            const text = input.value.trim();
+            if (!text) return;
+            state.goals.push({ id: Date.now(), text: text, completed: false, createdAt: new Date().toISOString() });
+            await saveAllCoreData();
+            renderGoals();
+            input.value = '';
+            input.focus();
+        }
+
+        // 目标操作
+        document.getElementById('goalsList').addEventListener('click', async function(e) {
+            const target = e.target.closest('[data-action]');
+            if (!target) return;
+            const action = target.dataset.action;
+            const id = parseInt(target.dataset.id, 10);
+            if (action === 'toggle') {
+                const goal = state.goals.find(g => g.id === id);
+                if (goal) { goal.completed = !goal.completed;
+                    await saveAllCoreData();
+                    renderGoals(); }
+            } else if (action === 'delete') {
+                if (!confirm('确定删除该目标吗？')) return;
+                state.goals = state.goals.filter(g => g.id !== id);
+                await saveAllCoreData();
+                renderGoals();
+            }
+        });
+
+        document.getElementById('clearDoneBtn').addEventListener('click', async function() {
+            const done = state.goals.filter(g => g.completed);
+            if (done.length === 0) return;
+            if (!confirm(`确定清除 ${done.length} 项已完成的目标吗？`)) return;
+            state.goals = state.goals.filter(g => !g.completed);
+            await saveAllCoreData();
+            renderGoals();
+        });
+
+        // ============================================================
+        //  导出 / 导入 / 恢复示例
+        // ============================================================
+        function exportData() {
+            const data = {
+                birthDate: state.birthDate ? formatDateInput(state.birthDate) : null,
+                targetAge: state.targetAge,
+                goals: state.goals,
+                exportTime: new Date().toISOString(),
+                version: '2.0'
+            };
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `生命计时器备份_${new Date().toISOString().slice(0,10)}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function importData(file) {
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (!data.birthDate && !data.targetAge && !data.goals) {
+                        alert('无效的备份文件');
+                        return;
+                    }
+                    if (data.birthDate) {
+                        const d = parseDate(data.birthDate);
+                        state.birthDate = (d && !isNaN(d.getTime())) ? d : null;
+                    }
+                    if (data.targetAge && data.targetAge > 0) state.targetAge = data.targetAge;
+                    if (Array.isArray(data.goals)) state.goals = data.goals;
+                    await saveAllCoreData();
+                    renderAll();
+                    alert('数据导入成功！');
+                } catch (err) {
+                    alert('导入失败，请检查文件格式');
+                    console.error(err);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function resetDefaultGoals() {
+            if (!confirm('将恢复三条示例目标（会覆盖当前所有目标），确定吗？')) return;
+            state.goals = [
+                { id: Date.now() + 1, text: '🚀 掌握一项新技能', completed: false, createdAt: new Date().toISOString() },
+                { id: Date.now() + 2, text: '🌍 旅行 10 个国家', completed: false, createdAt: new Date().toISOString() },
+                { id: Date.now() + 3, text: '📚 读完 100 本书', completed: false, createdAt: new Date().toISOString() },
+            ];
+            saveAllCoreData();
+            renderGoals();
+        }
+
+        document.getElementById('exportDataBtn').addEventListener('click', exportData);
+        document.getElementById('importDataBtn').addEventListener('click', function() {
+            document.getElementById('importFileInput').click();
+        });
+        document.getElementById('importFileInput').addEventListener('change', function(e) {
+            if (this.files && this.files[0]) {
+                importData(this.files[0]);
+            }
+            this.value = '';
+        });
+        document.getElementById('resetDefaultGoalsBtn').addEventListener('click', resetDefaultGoals);
+
+        // ============================================================
+        //  初始化
+        // ============================================================
+        (async function init() {
+            await openDB();
+            await loadStateFromDB();
+            renderAll();
+            setInterval(() => {
+                renderDate();
+                renderAge();
+            }, 1000);
+            console.log('✅ 时光机已启动');
+        })();
+    </script>
+</body>
+</html>
